@@ -1,0 +1,254 @@
+[
+    {
+        "monthHe": "תשרי",
+        "day": 13,
+        "title": "יום הולדת לאבא",
+        "year": 1966,
+        "image": "/assets/aba.jpg"
+    },
+    {
+        "monthHe": "אב",
+        "day": 21,
+        "year": 1967,
+        "title": "יום הולדת לאמא",
+        "image": "/assets/ima.jpg"
+    },
+    {
+        "monthHe": "תמוז",
+        "day": 24,
+        "year": 1990,
+        "title": "יום הולדת להודיה",
+        "image": "/assets/hodaya.jpeg"
+    },
+    {
+        "monthHe": "כסלו",
+        "year": 1990,
+        "day": 21,
+        "title": "יום הולדת לדידי",
+        "image": "/assets/didi.jpeg"
+    },
+    {
+        "monthHe": "שבט",
+        "year": 2013,
+        "day": 18,
+        "title": "יום הולדת למעיין",
+        "image": "/assets/maayan.jpeg"
+    },
+    {
+        "monthHe": "אדר",
+        "year": 2015,
+        "day": 29,
+        "title": "יום הולדת לערגה",
+        "image": "/assets/erga.jpeg"
+    },
+    {
+        "monthHe": "אב",
+        "year": 2016,
+        "day": 13,
+        "title": "יום הולדת לחן",
+        "image": "/assets/chen.jpeg"
+    },
+    {
+        "monthHe": "אב",
+        "day": 7,
+        "year": 2020,
+        "title": "יום הולדת לקדם",
+        "image": "/assets/kedem.jpeg"
+    },
+    {
+        "monthHe": "אדר",
+        "day": 8,
+        "year": 2024,
+        "title": "יום הולדת למרום",
+        "image": "/assets/marom.jpeg"
+    },
+    {
+        "monthHe": "תמוז",
+        "day": 5,
+        "year": 1991,
+        "title": "יום הולדת לדוד",
+        "image": "/assets/david.jpeg"
+    },
+    {
+        "monthHe": "חשוון",
+        "day": 2,
+        "year": 1991,
+        "title": "יום הולדת לאורנא",
+        "image": "/assets/orna.jpg"
+    },
+    {
+        "monthHe": "טבת",
+        "year": 2011,
+        "day": 5,
+        "title": "יום הולדת להראל",
+        "image": "/assets/harel.jpg"
+    },
+    {
+        "monthHe": "אייר",
+        "year": 2013,
+        "day": 7,
+        "title": "יום הולדת לתאיר",
+        "image": "/assets/tair.jpeg"
+    },
+    {
+        "monthHe": "אב",
+        "year": 2014,
+        "day": 28,
+        "title": "יום הולדת לשיראל",
+        "image": "/assets/shirel.jpg"
+    },
+    {
+        "monthHe": "תשרי",
+        "year": 2019,
+        "day": 17,
+        "title": "יום הולדת לזיו",
+        "image": "/assets/ziv.jpg"
+    },
+    {
+        "monthHe": "תשרי",
+        "year": 2021,
+        "day": 4,
+        "title": "יום הולדת לשוהם",
+        "image": "/assets/shoham.jpg"
+    },
+    {
+        "monthHe": "תשרי",
+        "year": 1993,
+        "day": 10,
+        "title": "יום הולדת לאיתי",
+        "image": "/assets/itay.png"
+    },
+    {
+        "monthHe": "תשרי",
+        "year": 1993,
+        "day": 1,
+        "title": "יום הולדת ליעל",
+        "image": "/assets/yael.png"
+    },
+    {
+        "monthHe": "שבט",
+        "year": 2023,
+        "day": 23,
+        "title": "יום הולדת לתום",
+        "image": "/assets/tom.jpeg"
+    },
+    {
+        "monthHe": "תשרי",
+        "year": 2024,
+        "day": 13,
+        "title": "יום הולדת לאור",
+        "image": "/assets/or.png"
+    },
+    {
+        "monthHe": "ניסן",
+        "year": 1994,
+        "day": 6,
+        "title": "יום הולדת לחרות",
+        "image": "/assets/cherut.png"
+    },
+    {
+        "monthHe": "סיוון",
+        "year": 1996,
+        "day": 2,
+        "title": "יום הולדת לרואי",
+        "image": "/assets/roi.png"
+    },
+    {
+        "monthHe": "אב",
+        "day": 25,
+        "year": 1983,
+        "title": "יום הולדת לארז",
+        "image": "/assets/erez.png"
+    },
+    {
+        "monthHe": "ניסן",
+        "year": 1999,
+        "day": 20,
+        "title": "יום הולדת לנאוה",
+        "image": "/assets/nava.jpeg"
+    },
+    {
+        "monthHe": "שבט",
+        "year": 1999,
+        "day": 22,
+        "title": "יום הולדת לג'ו",
+        "image": "/assets/jo.jpeg"
+    },
+    {
+        "monthHe": "שבט",
+        "year": 2001,
+        "day": 28,
+        "title": "יום הולדת לאבידן",
+        "image": "/assets/avidan.jpg"
+    },
+    {
+        "monthHe": "אב",
+        "year": 2001,
+        "day": 21,
+        "title": "יום הולדת לארבל",
+        "image": "/assets/arbel.png"
+    },
+    {
+        "monthHe": "אב",
+        "year": 2004,
+        "day": 4,
+        "title": "יום הולדת לעודד",
+        "image": "/assets/oded.jpg"
+    },
+    {
+        "monthHe": "אב",
+        "year": 2009,
+        "day": 27,
+        "title": "יום הולדת לידידיה",
+        "image": "/assets/yedid.png"
+    },
+    {
+        "monthHe": "אב",
+        "day": 12,
+        "year": 1989,
+        "title": "יום נישואים לאבא ואמא",
+        "image": "/assets/anniversaryRR.jpeg"
+    },
+    {
+        "monthHe": "כסלו",
+        "year": 2012,
+        "day": 11,
+        "title": "יום נישואים להודיה ודידי",
+        "image": "/assets/anniversaryHD.jpeg"
+    },
+    {
+        "monthHe": "שבט",
+        "year": 2011,
+        "day": 8,
+        "title": "יום נישואים לדוד ואורנא",
+        "image": "/assets/anniversary-do.jpeg"
+    },
+    {
+        "monthHe": "אלול",
+        "year": 2020,
+        "day": 12,
+        "title": "יום נישואים לאיתי ויעל",
+        "image": "/assets/anniversaryEY.png"
+    },
+    {
+        "monthHe": "תמוז",
+        "year": 2024,
+        "day": 12,
+        "title": "יום נישואים לרואי וארז",
+        "image": "/assets/anniversary-re.jpg"
+    },
+    {
+        "monthHe": "ניסן",
+        "year": 2024,
+        "day": 1,
+        "title": "יום נישואים לנאוה וג'ו",
+        "image": "/assets/anniversaryNJ.jpg"
+    },
+    {
+        "monthHe": "אדר",
+        "year": 2025,
+        "day": 15,
+        "title": "יום נישואים לאבידן וארבל",
+        "image": "/assets/anniversary-aa.jpg"
+    }
+]

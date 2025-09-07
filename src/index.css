@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap'); /* טעינת פונט Amatic SC מ-Google Fonts */
+
+/* עיצוב בסיסי לגוף העמוד */
+body { /* אלמנט הבסיס לכל העמוד */
+  font-family: 'Amatic SC', cursive; /* שימוש בפונט Amatic SC, וגיבוי כ-cursive */
+  font-weight: 700; /* משקל פונט מודגש */
+}
+
+/* ---------- הדפסה וסטיילינג כללי ---------- */
+
+/* src/index.css */
+@page { size: A4 landscape; margin: 10mm; } /* הגדרות עמוד להדפסה: A4 לרוחב ושוליים 10 מ״מ */
+* { box-sizing: border-box; } /* חישוב רוחב/גובה כולל padding ו-border */
+body {
+  background: #fff; color: #111827; /* רקע לבן וטקסט אפור-כהה */
+  /* font-family: "Rubik","Heebo","Assistant",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Hebrew",Arial,sans-serif; */ /* פונט חלופי (מנוטרל כרגע) */
+  margin: 0; /* הסרת שוליים ברירת מחדל של body */
+}
+
+.calendar-root { min-height: 100vh; } /* מוודא שהקונטיינר תופס גובה מסך מלא לפחות */
+
+
+.toolbar {
+  position: sticky; top: 0; z-index: 10; background: #fff; /* סרגל שמודבק ללמעלה, מעל התוכן, רקע לבן */
+  display: flex; gap: .75rem; justify-content: space-between; /* פריסת Flex, רווחים, פירוק לשני צדדים */
+  padding: 12px 16px; border-bottom: 1px solid #e5e7eb; /* ריפוד פנימי וקו תחתון עדין */
+}
+.toolbar .left { display: flex; gap: .5rem; align-items: center; } /* קבוצה שמאלית עם יישורת אנכית ורווחים */
+label { font-size: .95rem; color: #6b7280; } /* תוויות בגודל מעט קטן וצבע אפור בינוני */
+select, input[type="number"], button {
+  font: inherit; padding: .35rem .6rem; border: 1px solid #e5e7eb; border-radius: .5rem; background: #fff; /* קלטים וכפתורים עם עיצוב אחיד */
+}
+button { cursor: pointer; background: #0ea5e9; color: #fff; border-color: transparent; } /* כפתור בצבע תכלת, טקסט לבן, סמן יד */
+
+.month { page-break-after: always; } /* כל חודש יתחיל בעמוד חדש בהדפסה */
+.month-header {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin: 8px 0 12px; /* כותרת חודש ברשת 3 עמודות ליישור */
+}
+.month-title { text-align: center; grid-column: 2; } /* כותרת חודש ממורכזת בעמודה האמצעית */
+.month h1 { font-size: 1.35rem; margin: 0; } /* גודל כותרת חודש והסרת שוליים */
+.subtitle { margin-top: 2px; color: #6b7280; font-size: .95rem; } /* כותרת משנה אפורה וקטנה יותר */
+
+.grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); /* רשת של 7 עמודות (ימי השבוע) */
+  border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; /* מסגרת מעוגלת וחיתוך תוכן עודף */
+}
+.dow {
+  background: #f8fafc; color: #6b7280;   font-weight: 700; font-size: .95rem; /* שורת ימי השבוע: רקע בהיר וטקסט מודגש */
+  text-align: center; padding: .55rem 0; border-inline-start: 1px solid #e5e7eb; /* יישור מרכזי, ריפוד וקו אנכי בין ימים */
+}
+.dow:first-child { border-inline-start: none; } /* הסרת קו אנכי מהיום הראשון */
+
+/* התא עצמו */
+.cell {
+ --notes-h: 15mm;                      /* משתנה CSS לגובה אזור ההערות בתחתית התא */
+ min-height: 28mm;
+  border-top: 1px solid #e5e7eb; border-inline-start: 1px solid #e5e7eb; /* גובה מינימום וקווי רשת פנימיים */
+ padding: 3px 4px;  /* ריפוד: עליון/צידי קבוע ותחתון שמותאם לגובה ההערות */
+ position: relative; /* מאפשר מיקום מוחלט של אזור ההערות בתוך התא */
+}
+
+.cell:nth-child(7n+1) { border-inline-start: none; } /* הסרת קו אנכי מהתא הראשון בכל שורה */
+.other-month .g-num, .other-month .h-num { color: #c7cdd8; } /* ימים מחודש אחר מוצגים בצבע דהוי */
+
+.date-nums { display: flex; align-items: flex-start; justify-content: space-between; gap: 3px; padding: 5px; } /* שורה עם תאריך לועזי/עברי משני צדדים */
+.g-num { font-size: 1.05rem; font-weight: 700; } /* מספר תאריך לועזי בולט */
+.h-num { font-size: .8rem; color: #42464e; text-shadow: #fff 0px 1px 1px;    font-weight: 700; display: flex; flex-direction: column; } /* תאריך עברי: קטן, אפור, מסודר טורית */
+.h-num .h-word { font-size: .9rem; } /* מילת תאריך עברי מעט גדולה יותר */
+/* .today { outline: 2px solid #0ea5e9; outline-offset: -2px; background: #f0f9ff; } הדגשת היום הנוכחי במסגרת ורקע תכלת */
+.shabbat { background: linear-gradient(180deg, rgba(253, 255, 230, 0.6), transparent 60%); } /* רקע עדין לשבת */
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; } /* אזור תגיות בתוך התא עם עטיפה לרוחב */
+.tag { font-size: .75rem; text-shadow: #fff 0px 1px 1px; border-radius: 999px; padding: 2px 8px; } /* תגית בצ'יפ עגול */
+/* .tag.parsha { border-color: #dbeafe; background: #eff6ff; } צבע מיוחד לתגית פרשה */
+
+/* אזור הערות/תמונות בתחתית התא (מוחלט ביחס לתא) */
+
+.page-hint { text-align: center; margin-top: 4px; color: #6b7280; font-size: .85rem; } /* טקסט עזרה מתחת לעמוד */
+
+
+/* כרטיס ברירת מחדל */
+.cell .note-item {
+  position: relative; /* מאפשר שכבות פנימיות */
+  /* שליטה צפויה בגודל הכרטיס: */
+  aspect-ratio: auto;
+  border: 1px solid #e5e7eb; /* מסגרת דקה */
+  border-radius: 10px; /* פינות מעוגלות */
+  overflow: hidden; /* חיתוך תוכן חורג */
+  height: 100%; 
+}
+
+/* תמונה כרקע */
+.cell .note-item.has-image {
+  border: 0; /* בלי מסגרת כשיש תמונת רקע */
+  background-position: center; /* מיקום התמונה במרכז */
+}
+
+/* מצב בלי חיתוך */
+.cell .note-item.has-image.no-crop {
+  background-size: contain;         /* התמונה תישאר כולה בתוך המסגרת */
+  background-repeat: no-repeat; /* בלי חזרה על התמונה */
+}
+
+/* שכבת כהות חזקה יותר לטקסט קריא */
+.cell .note-item.has-image::after {
+  content: ""; /* יצירת שכבת פסאודו */
+  position: absolute; inset: 0; /* מכסה את כל הכרטיס */
+}
+
+/* כיתוב */
+.cell .note-caption {
+  position: absolute; /* מיקום חופשי בתוך הכרטיס */
+  left: 8px; right: 8px; bottom: 8px; /* רווחים מהקצוות */
+  font-size: 13px; line-height: 1.25; /* גודל טקסט וגובה שורה */
+  color: #fff; /* טקסט לבן */
+  display: inline-block; /* הצגת בלוק-בשורה */
+  padding: 2px 6px; /* ריפוד פנימי קטן */
+  border-radius: 6px; /* פינות מעוגלות */
+  text-shadow: 0 1px 2px rgba(0,0,0,.7), 0 0 2px rgba(0,0,0,.6); /* צללת טקסט לשיפור קריאות */
+}
+
+/* כיתוב לבן מעל תמונה */
+.cell .note-item.has-image .note-caption {
+  color: #fff; /* טקסט לבן */
+  text-shadow: 0 1px 2px rgba(0,0,0,.6); /* צללה עדינה */
+}
+
+/* אופציונלי: הדפסה – שמרי צבעים/רקע (תלוי בהגדרות דפדפן) */
+@media print {
+  .cell .note-item.has-image {
+    -webkit-print-color-adjust: exact; /* ניסיון לשמר צבעים בכרום */
+    print-color-adjust: exact; /* ניסיון לשמר צבעים כללי */
+  }
+}
+
+@media print {
+  .toolbar, .page-hint { display: none; } /* הסתרת סרגל ורמזים בהדפסה */
+  body { margin: 0; } /* הסרת מרווחים בהדפסה */
+}
+
+.cell .note-item {
+  display: grid; /* פרישת תוכן הכרטיס ברשת (תמונה+כיתוב) */
+  gap: .15rem; /* רווח קטן פנימי */
+  font-size: 12px; /* טקסט קטן להדפסה נקייה */
+}
+.cell .note-item img {
+  width: 100%; /* תמונה נמתחת לרוחב הכרטיס */
+  max-height: 60px;    /* מגבלת גובה כדי לא לשבור את התא */
+  object-fit: cover; /* חיתוך התמונה לשמירת יחס */
+  border-radius: 4px; /* פינות מעוגלות לתמונה */
+  border: 1px solid #e5e7eb; /* מסגרת עדינה לתמונה */
+}
+.cell .note-item figcaption {
+  line-height: 1.2; /* גובה שורה צפוף יותר לכיתוב */
+}
+@media print {
+  .cell .note-item img {
+    max-height: 60px; /* מגבלת גובה מחמירה בהדפסה */
+  }
+}
+
+.cell .note-item.full-bg {
+  position: relative; /* מאפשר שכבת טקסט מעל */
+  width: 100%; /* רוחב מלא של הכרטיס */
+    max-height: 60px; /* מגבלת גובה מחמירה בהדפסה */
+  border-radius: 10px; /* פינות מעוגלות */
+  background-size: cover;      /* התמונה ממלאת את כל השטח (עלולה להיחתך) */
+  background-position: center; /* מיקום התמונה במרכז */
+  overflow: hidden; /* חיתוך תוכן חורג */
+  display: flex; /* שימוש ב-Flex למיקום התוכן */
+  align-items: flex-end;       /* יישור הטקסט לתחתית הכרטיס */
+  padding: 5px; /* ריפוד פנימי */
+}
+
+/* שכבת כהות עדינה כדי שהטקסט תמיד יראה */
+.cell .note-item.full-bg::after {
+  content: ""; /* שכבת פסאודו */
+  position: absolute; inset: 0; /* מכסה את כל הכרטיס */
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.6) 0%,
+    rgba(0,0,0,.2) 30%,
+    rgba(0,0,0,0) 60%
+  ); /* גרדיאנט אופציונלי (מנוטרל)
+  background-color: #111827; /* שכבת כהות אחידה (אפור כהה) לשיפור קריאות הטקסט */
+}
+
+/* האזור של הטקסטים */
+.cell .overlay {
+  position: relative; /* כדי שהטקסט יהיה מעל שכבת הכהות */
+  z-index: 1; /* מתחת לסדרת שכבות — מוודא שהטקסט נראה */
+  width: 100%; /* רוחב מלא */
+  padding: 6px 8px; /* ריפוד פנימי לטקסט */
+  display: flex; /* פריסת התוכן כעמודה */
+  flex-direction: column; /* טקסטים אחד מעל השני */
+  gap: 4px; /* רווח אנכי בין שורות */
+}
+
+/* טקסטים */
+.cell .overlay .personal-title,
+.cell .overlay .event {
+  color: #fff; /* טקסט לבן מעל רקע כהה */
+  font-size: .85rem; /* גודל טקסט */
+  line-height: 1.3; /* גובה שורה נוח לקריאה */
+  text-shadow: 0 1px 3px rgba(0,0,0,.8); /* צללת טקסט לשיפור קריאות */
+}
+.cell .overlay .personal-title {
+    font-weight: 700; /* כותרת אישית מודגשת */
+}
+
+/* נשאיר לתא position:relative כדי למקם שכבות */
+.cell { position: relative; }
+
+/* שכבת התמונות – מכסה את כל התא עם רווח פנימי קטן */
+.cell .notes {
+  position: absolute;
+  inset: 4px;            /* 4px מכל הצדדים – כולל למעלה! */
+  display: grid;
+  gap: 4px;
+  z-index: 1;            /* מתחת לשכבות הכותרות/תגיות שנשים להן z-index גבוה יותר */
+}
+
+/* פריסות דינמיות לפי כמות פריטים */
+.cell .notes.n1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.cell .notes.n2 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}.cell .notes.n3,
+.cell .notes.n4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }   /* 2×2 */
+
+/* כרטיס תמונה/כותרת – נמתח כדי למלא את תא הגריד */
+.cell .note-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f3f4f6;    /* גיבוי כשאין תמונה */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 0;
+}
+
+/* שכבת כיתוב בתחתית הכרטיס (עם גרדיינט עדין) */
+.cell .note-item .overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1.15;
+  text-align: end;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 65%);
+}
+
+/* אם אין תמונה – טקסט כהה, בלי גרדיינט */
+.cell .note-item:not(.has-image) .overlay {
+  background: none;
+  color: #111827;
+}
+
+/* טקסט הכותרת האישית */
+.cell .note-item .personal-title {
+  white-space: normal;   /* מאפשר שבירה */
+  overflow: hidden;     /* מונע חיתוך */
+  word-break: break-word; /* במידת הצורך שובר מילים ארוכות */
+  text-wrap: balance;
+  font-size: clamp(10px, 1.2vw, 14px);
+}
+
+/* הדפסה: שמירה על צבעים/רקע ככל האפשר */
+@media print {
+  .cell .notes { gap: 3px; }
+  .cell .note-item { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* המספרים/כותרת היום והתגיות – מעל התמונות עם רקע לבן עדין */
+.cell .date-nums,
+.cell .tags {
+  position: relative;
+  z-index: 2;                          /* מעל .notes */
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 8px;
+}
+
+/* לא לשנות את ה-layout המקורי: נוסיף פדינג עדין כדי שלא יידבק לטקסט */
+.cell .date-nums { padding: 4px 5px; }
+.cell .tags { padding: 1px; display: flex; flex-direction: column; }
