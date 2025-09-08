@@ -18,7 +18,7 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
 
     const dow = date.getDay();
     const isShabbat = dow === 6;
-    const { itemsByDate, setEditorTarget } = useCalendarSession();
+    const { itemsByDate, setEditorTarget, openNew, openEdit } = useCalendarSession();
 
     const parsha = isShabbat ? (parshaMap.get(iso) || "") : "";
     const shab = shabbatMap.get(iso) || {}; // { candles?, havdalah? }
@@ -27,24 +27,8 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
         Boolean(shab.candles || shab.havdalah || parsha || (events.length > 0) || personal.length > 0);
 
     const hasRoom = (itemsByDate.get(iso)?.length || 0) + (personal.length || 0) < 4;
-
-    // מצב מודל
-    const [editorOpen, setEditorOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState(null);
-
-    // פריטים עם crop: אם יש p.crop => נתרגם את זה ל- backgroundPosition/Size
-    const renderStyleForItem = (p) => {
-        if (!p.image) return undefined;
-        const scale = p?.crop?.scale ?? 1;
-        const x = p?.crop?.x ?? 50;
-        const y = p?.crop?.y ?? 50;
-        return {
-            backgroundImage: `url(${p.image})`,
-            backgroundSize: `${scale * 100}% auto`,
-            backgroundPosition: `${x}% ${y}%`,
-        };
-    };
-
+    const sessionItems = itemsByDate.get(iso) || [];
+     const totalCount = Math.min(personal.length + sessionItems.length, 4);
 
     return (
         <div className={`cell${other ? " other-month" : ""}${isToday ? " today" : ""}${isShabbat ? " shabbat" : ""}`}>
@@ -100,6 +84,7 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
                     +
                 </button>
             )}
+            
         </div >
     );
 }

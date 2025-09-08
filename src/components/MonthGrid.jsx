@@ -39,10 +39,10 @@ export default function MonthGrid({ year, monthIndex, parshaMap, shabbatMap, eve
     return (
         <section className="month">
             <div className="month-header">
-                {/* <div className="month-title">
+                <div className="month-title">
                     <h1>{gTitle}</h1>
                     <div className="subtitle">{hTitle}</div>
-                </div> */}
+                </div>
             </div>
             <div className="grid">
                 {DOW.map((d) => (
