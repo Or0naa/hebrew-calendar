@@ -5,7 +5,7 @@ import { HE_MONTHS } from "../utils/dates";
 import { HDate, gematriya } from "@hebcal/core";
 
 
-export default function MonthGrid({ year, monthIndex, parshaMap, shabbatMap, eventsMap, personalMap  }) {
+export default function MonthGrid({ year, monthIndex, parshaMap, shabbatMap, eventsMap, personalMap, onAddItem, onOpenAdd , }) {
     const first = new Date(year, monthIndex, 1);
     const gTitle = first.toLocaleDateString("he-IL", { month: "long", year: "numeric" });
     const hTitle = (() => {
@@ -57,6 +57,8 @@ export default function MonthGrid({ year, monthIndex, parshaMap, shabbatMap, eve
                         shabbatMap={shabbatMap}
                         eventsMap={eventsMap}
                         personalMap={personalMap}
+                        onAddItem={onAddItem}
+                        onOpenAdd ={onOpenAdd }
                     />
                 ))}
             </div>

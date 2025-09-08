@@ -23,7 +23,7 @@ export async function getParshiotForYear(year, { israel = true } = {}) {
         start,
         end,
         il: israel,
-        sedra: true,
+        sedrot: true,
         locale: "he",
     });
 

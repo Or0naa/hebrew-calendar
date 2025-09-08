@@ -1,9 +1,15 @@
 // src/components/DayCell.jsx
-import React from "react";
+import React, { useState } from "react";
 import { hebrewDateString, hebrewDayNumber, toISO } from "../utils/dates";
+import DayEditorModal from "./DayEditorModal"; // קובץ חדש למודל (בהמשך)
+import { useCalendarSession } from "../session/CalendarSessionContext";
 
-export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap, personalMap }) {
+export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap, personalMap, onAddItem, onOpenAdd }) {
     const iso = toISO(date);
+    const personal = personalMap?.get(iso) || [];
+    const cellYear = date.getFullYear();
+    const withAge = personal.map(p => p.year ? { ...p, age: cellYear - p.year } : p);
+    const count = Math.min(withAge.length, 4);
     const today = new Date();
     const isToday =
         today.getFullYear() === date.getFullYear() &&
@@ -12,23 +18,33 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
 
     const dow = date.getDay();
     const isShabbat = dow === 6;
-    const personal = personalMap?.get(iso) || []; // [{title, image}]
-    // גיל/שנות נישואין יחושבו לפי שנת התא המוצג
-    const cellYear = date.getFullYear();
-    const withAge = personal.map(p => {
-        if (!p.year) return p;
-        return { ...p, age: cellYear - p.year };
-    });
-
-    const count = Math.min(withAge.length, 4);
-
-
+    const { itemsByDate, setEditorTarget } = useCalendarSession();
 
     const parsha = isShabbat ? (parshaMap.get(iso) || "") : "";
     const shab = shabbatMap.get(iso) || {}; // { candles?, havdalah? }
     const events = eventsMap?.get(iso) || []; // מערך מחרוזות אירוע
     const hasTags =
         Boolean(shab.candles || shab.havdalah || parsha || (events.length > 0) || personal.length > 0);
+
+    const hasRoom = (itemsByDate.get(iso)?.length || 0) + (personal.length || 0) < 4;
+
+    // מצב מודל
+    const [editorOpen, setEditorOpen] = useState(false);
+    const [editingItem, setEditingItem] = useState(null);
+
+    // פריטים עם crop: אם יש p.crop => נתרגם את זה ל- backgroundPosition/Size
+    const renderStyleForItem = (p) => {
+        if (!p.image) return undefined;
+        const scale = p?.crop?.scale ?? 1;
+        const x = p?.crop?.x ?? 50;
+        const y = p?.crop?.y ?? 50;
+        return {
+            backgroundImage: `url(${p.image})`,
+            backgroundSize: `${scale * 100}% auto`,
+            backgroundPosition: `${x}% ${y}%`,
+        };
+    };
+
 
     return (
         <div className={`cell${other ? " other-month" : ""}${isToday ? " today" : ""}${isShabbat ? " shabbat" : ""}`}>
@@ -54,6 +70,7 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
                 </div>
             )}
 
+
             <div className={`notes n${count}`}>
                 {withAge.slice(0, 4).map((p, i) => (
                     <div
@@ -69,7 +86,20 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
                     </div>
                 ))}
             </div>
-
-        </div>
+            {/* כפתור + לשכבת UI בלבד — לא מודפס */}
+            {hasRoom && (
+                <button
+                    type="button"
+                    className="print-hidden add-btn"
+                    aria-label="הוספת פריט יומי"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setEditorTarget({ iso });
+                    }}
+                >
+                    +
+                </button>
+            )}
+        </div >
     );
 }

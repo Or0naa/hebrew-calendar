@@ -5,6 +5,10 @@ import { getParshiotForYear, getShabbatTimes, getHebcalEvents } from "../service
 import specials from "../userSpecials.json";
 import { HDate } from "@hebcal/core";
 import { HE_MONTHS, toISO } from "../utils/dates";
+// שכבת סשן מקומית לפריטים ידניים
+import { useRef } from "react";
+import DayEditorModal from "./DayEditorModal";
+import { useCalendarSession } from "../session/CalendarSessionContext";
 
 const CITY_PRESETS = [
     { label: "יקיר (18)", latitude: 32.148783, longitude: 35.112666, tzid: "Asia/Jerusalem", b: 18 },
@@ -63,11 +67,39 @@ export default function PrintableCalendar() {
     const [loading, setLoading] = useState(false);
     const [eventsMap, setEventsMap] = useState(new Map());
     const [personalMap, setPersonalMap] = useState(new Map());
+    // מפה זמנית לסשן: Map<iso, Array<{id,title,year,image,crop}>>
+    const [sessionPersonalMap, setSessionPersonalMap] = useState(new Map());
+    const [addOpen, setAddOpen] = useState(false);
+    const [addIso, setAddIso] = useState(null);
+    const { itemsByDate, previewMode } = useCalendarSession();
+
+    // מאחדים את המפות (userSpecials + סשן) – זה מה שנשלח ל-DayCell
+    const combinedPersonalMap = useMemo(() => {
+        const out = new Map(personalMap); // מהקובץ
+        for (const [iso, arr] of sessionPersonalMap.entries()) {
+            const base = out.get(iso) || [];
+            out.set(iso, [...base, ...arr]);
+        }
+        return out;
+    }, [personalMap, sessionPersonalMap]);
+
 
 
     const rangeStart = useMemo(() => new Date(year, 8, 1), [year]);       // 1 Sep (השנה)
     const rangeEnd = useMemo(() => new Date(year + 1, 7, 31), [year]);  // 31 Aug (שנה הבאה)
 
+    useEffect(() => {
+        const onBeforeUnload = (e) => {
+            if (sessionPersonalMap.size > 0) {
+                const msg = "שימי לב: הנתונים שהוספת נשמרים רק בזמן הגלישה. אם תעזבי עכשיו — הכול ימחק.";
+                e.preventDefault();
+                e.returnValue = msg;
+                return msg;
+            }
+        };
+        window.addEventListener("beforeunload", onBeforeUnload);
+        return () => window.removeEventListener("beforeunload", onBeforeUnload);
+    }, [sessionPersonalMap]);
 
     useEffect(() => {
         let canceled = false;
@@ -92,9 +124,117 @@ export default function PrintableCalendar() {
         return () => { canceled = true; };
     }, [year, city, rangeStart, rangeEnd]);
 
+    // helper לייצר id
+    const makeId = () => crypto.randomUUID();
+
+    // הוספה/עדכון/מחיקה/דריסה ביום מסוים:
+    const addSessionItem = (iso, payload) => {
+        setSessionPersonalMap(prev => {
+            const arr = prev.get(iso) ? [...prev.get(iso)] : [];
+            if (arr.length >= 4) return prev; // מגבלת 4
+            arr.push({ id: makeId(), ...payload }); // {title,year,image,crop}
+            const next = new Map(prev);
+            next.set(iso, arr);
+            return next;
+        });
+    };
+
+    const updateSessionItem = (iso, itemId, patch) => {
+        setSessionPersonalMap(prev => {
+            const arr = prev.get(iso) ? [...prev.get(iso)] : [];
+            const idx = arr.findIndex(i => i.id === itemId);
+            if (idx === -1) return prev;
+            arr[idx] = { ...arr[idx], ...patch };
+            const next = new Map(prev);
+            next.set(iso, arr);
+            return next;
+        });
+    };
+
+    const deleteSessionItem = (iso, itemId) => {
+        setSessionPersonalMap(prev => {
+            const arr = prev.get(iso) ? prev.get(iso).filter(i => i.id !== itemId) : [];
+            const next = new Map(prev);
+            next.set(iso, arr);
+            return next;
+        });
+    };
+
+    // דריסה מלאה בתאריך (לייבוא JSON)
+    const setSessionItemsForDate = (iso, items /* array */) => {
+        setSessionPersonalMap(prev => {
+            const next = new Map(prev);
+            next.set(iso, items.slice(0, 4));
+            return next;
+        });
+    };
+
+    // חושפים ל-Modal (פשוט ובטוח, חיי סשן בלבד)
+    useEffect(() => {
+        window.__calendarSessionApi__ = {
+            add: addSessionItem,
+            update: updateSessionItem,
+            del: deleteSessionItem,
+            setForDate: setSessionItemsForDate,
+        };
+        return () => { delete window.__calendarSessionApi__; };
+    }, [addSessionItem, updateSessionItem, deleteSessionItem, setSessionItemsForDate]);
+
+    // בתוך PrintableCalendar.jsx
+
+    // הוספת פריט לסשן (מפה קיימת) – עד 4 פריטים בתא
+    function handleAddItem(iso, newItem) {
+        console.log('iso :>> ', iso);
+        setPersonalMap(prev => {
+            const map = new Map(prev);
+            const arr = map.get(iso) ? [...map.get(iso)] : [];
+            if (arr.length >= 4) return prev;
+            const itemWithId = {
+                id: crypto?.randomUUID ? crypto.randomUUID() : `${Date.now()
+                    }_${Math.random().toString(36).slice(2, 8)}`,
+                ...newItem,
+            };
+            arr.push(itemWithId);
+            map.set(iso, arr);
+            return map;
+        });
+    }
+
+    // פתיחת מודאל הוספה
+    function openAddModal(iso) {
+        setAddIso(iso);
+        setAddOpen(true);
+    }
+    function closeAddModal() {
+        setAddOpen(false);
+        setAddIso(null);
+    }
+    function saveAddModal(item) {
+        if (addIso && item) handleAddItem(addIso, item);
+        closeAddModal();
+    }
+
+    // מיזוג פריטי סשן (itemsByDate) מעל personalMap הקיים — ללא השפעה כשאין סשן.
+    const mergedPersonalMap = useMemo(() => {
+        const merged = new Map(personalMap);
+        itemsByDate.forEach((arr, iso) => {
+            const base = merged.get(iso)?.slice() || [];
+            // נמפה את שדות הסשן לשדות שמוצגים ב-DayCell (title, image, year)
+            const sessionAsPersonal = arr.slice(0, 4).map(it => ({
+                title: it.title || "",
+                image: it.image || null,
+                year: it.year ?? null,
+            }));
+            // מציבים את פריטי הסשן בסוף/מעל — כרגע נעדיף שהסשן **יופיע** (אפשר לשנות סדר בהמשך)
+            merged.set(iso, [...base, ...sessionAsPersonal].slice(0, 4));
+        });
+        return merged;
+    }, [personalMap, itemsByDate]);
+
+
     return (
         <div dir="rtl" className="calendar-root">
-            <div className="toolbar" aria-hidden>
+            <div className={`toolbar ${previewMode ? "" : "print-hidden"}`} aria-hidden={!previewMode ? true : undefined}>
                 <div className="left">
                     <label>שנה:</label>
                     <input
@@ -122,21 +262,27 @@ export default function PrintableCalendar() {
             <div className="year-container">
                 <div className="year-container">
                     {[8, 9, 10, 11].map(m => (
-                        <MonthGrid key={`y${year}-m${m}`} year={year} monthIndex={m}
+                        <MonthGrid key={`y${year} - m${m}`} year={year} monthIndex={m}
                             parshaMap={parshaMap}
                             shabbatMap={shabbatMap}
                             eventsMap={eventsMap}
-                            personalMap={personalMap}
+                            personalMap={mergedPersonalMap}
+                            onAddItem={handleAddItem}
+                            onOpenAdd={openAddModal}
                         />
                     ))}
                     {[0, 1, 2, 3, 4, 5, 6, 7].map(m => (
-                        <MonthGrid key={`y${year + 1}-m${m}`} year={year + 1} monthIndex={m}
+                        <MonthGrid key={`y${year + 1} - m${m} `} year={year + 1} monthIndex={m}
                             parshaMap={parshaMap}
                             shabbatMap={shabbatMap}
                             eventsMap={eventsMap}
-                            personalMap={personalMap}
+                            personalMap={mergedPersonalMap}
+                            onAddItem={handleAddItem}
+                            onOpenAdd={openAddModal}
                         />
                     ))}
+
+                    <DayEditorModal />
                 </div>
 
             </div>
