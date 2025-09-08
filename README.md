@@ -82,3 +82,5 @@ npm run build
 הלוח מותאם להדפסה על דף **A4 לרוחב**.  
 ה־CSS (`@page`) שולט על השוליים והפריסה.  
 
+
+<img width="1784" height="807" alt="image" src="https://github.com/user-attachments/assets/07bda125-aee6-4c9c-b083-003313bbf269" />
