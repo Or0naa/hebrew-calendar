@@ -34,7 +34,7 @@ export default function DayCell({ date, other, parshaMap, shabbatMap, eventsMap,
         <div className={`cell${other ? " other-month" : ""}${isToday ? " today" : ""}${isShabbat ? " shabbat" : ""}`}>
             <div className="date-nums">
                 <div className="h-num" title={hebrewDateString(date)}>
-                    <span className="h-digit">{hebrewDayNumber(date)}</span>
+                    {/* <span className="h-digit">{hebrewDayNumber(date)}</span> */}
                     <span className="h-word">{hebrewDateString(date)}</span>
                 </div>
                 <div className="g-num">{date.getDate()}</div>
